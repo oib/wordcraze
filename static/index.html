@@ -1,27 +1,65 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WordCraze</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ByThePowerOfMemory</title>
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <main>
-    <h1>🧠 WordCraze</h1>
+  <div class="container">
+    <h1>ByThePowerOfMemory</h1>
 
-    <section class="controls">
-      <button id="start">Spiel starten</button>
-    </section>
+    <div id="game-area"></div>
 
-    <section class="game">
-      <div id="word" class="word">_ _ _</div>
-      <input id="input" type="text" maxlength="1">
-      <div id="feedback" class="feedback"></div>
-      <div id="attempts" class="attempts">Versuche übrig: 8</div>
-    </section>
-  </main>
+    <div class="button-bar">
+      <button id="position-btn" >Position</button>
+      <button id="color-btn" >Color</button>
+      <button id="shape-btn" >Shape</button>
+      <button id="number-btn" >Number</button>
+    </div>
+    <div class="button-bar">  
+      <button id="start-btn">Start Game</button>
+      <button id="submit-btn" disabled>Submit</button>
+      <button id="restart-btn">Restart</button>
+      <button id="help-btn">❓ Help</button>
+      <button id="stats-btn">📊 Stats</button>
+    </div>
 
-  <script type="module" src="/static/app.js"></script>
+    <div id="scoreboard">
+  <p>✅ Correct: <span id="score-correct">0</span></p>
+  <p>❌ Wrong: <span id="score-wrong">0</span></p>
+</div>
+
+    <div id="chart-container">
+      <canvas id="scoreChart" width="800" height="300"></canvas>
+    </div>
+  </div>
+
+  <script type="module">
+    import { startRound } from "/static/round.js";
+    import { setupButtons } from "/static/button.js";
+    import { guess } from "/static/score.js";
+    import { submit, restart, startGame } from "/static/state.js";
+    import { showOverlay } from "/static/overlay.js";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      setupButtons({
+        onStart: startGame,
+        onSubmit: submit,
+        onRestart: restart,
+        onColor: () => guess("color"),
+        onPosition: () => guess("position"),
+        onShape: () => guess("shape"),
+        onNumber: () => guess("number")
+      });
+
+      document.getElementById("stats-btn").addEventListener("click", showOverlay);
+
+      startRound();
+    });
+  </script>
+  <script type="module" src="/static/chart.js"></script>
 </body>
 </html>
 
