@@ -1,0 +1,71 @@
+body {
+  font-family: sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #f9f9f9;
+  color: #333;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.controls label,
+.controls button {
+  font-size: 1rem;
+  margin: 0 auto;
+}
+
+.game {
+  text-align: center;
+}
+
+.word {
+  font-size: 2rem;
+  letter-spacing: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+input[type="text"] {
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 0.3rem;
+  width: 3rem;
+}
+
+.feedback {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.attempts {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #efefef;
+}
+
