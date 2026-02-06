@@ -20,7 +20,7 @@ app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
 # OpenWebUI Configuration
 OPENWEBUI_API_URL = os.getenv("OPENWEBUI_API_URL", "http://10.1.223.1:8080")
-OPENWEBUI_API_KEY = os.getenv("OPENWEBUI_API_KEY", "sk-eaa1c1c6cfe744179999f62a2fe5d3cf")
+OPENWEBUI_API_KEY = os.getenv("OPENWEBUI_API_KEY")
 OPENWEBUI_MODEL = os.getenv("OPENWEBUI_MODEL", "gemma3:1b")
 
 @app.get("/", response_class=HTMLResponse)
@@ -38,6 +38,9 @@ class GameState:
 state = None
 
 def getWordsFromOllama():
+    if not OPENWEBUI_API_KEY:
+        logger.error("OPENWEBUI_API_KEY not configured")
+        return []
     try:
         url = f"{OPENWEBUI_API_URL}/api/chat/completions"
         headers = {"Authorization": f"Bearer {OPENWEBUI_API_KEY}"}
