@@ -88,7 +88,8 @@ def start_game():
             json={
                 "model": OPENWEBUI_MODEL,
                 "messages": [
-                    {"role": "user", "content": f"Nenne ein Oberthema (wie ‚Möbel‘, ‚Tiere‘, ‚Sport‘), zu dem das Wort ‚{word}‘ gehört. Antworte nur mit einem allgemeinen Wort. Nenne niemals das Wort selbst."}
+                    {"role": "system", "content": "Du bist ein deutscher Wortexperte. Gib nur ein einziges, echtes deutsches Wort als Thema zurück."},
+                    {"role": "user", "content": f"Nenne ein konkretes Oberthema (z.B. 'Tiere', 'Möbel', 'Sport', 'Essen', 'Berufe', 'Kleidung'), zu dem das Wort '{word}' gehört. Antworte NUR mit dem Thema-Wort, nichts weiter. Das Thema muss ein echtes deutsches Wort sein."}
                 ],
                 "stream": False
             },
