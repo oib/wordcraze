@@ -3,25 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <title>WordCraze</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preload" href="/static/style.css" as="style">
   <link rel="stylesheet" href="/static/style.css">
+  <style>
+    /* Prevent FOUC - hide body until loaded */
+    html { visibility: hidden; opacity: 0; transition: opacity 0.3s ease; }
+    html.loaded { visibility: visible; opacity: 1; }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>🧠 WordCraze</h1>
+  <div class="game-container">
+    <header class="game-header">
+      <h1>🧠 WordCraze</h1>
+      <p class="subtitle">Rätsel das Wort!</p>
+    </header>
 
-    <section class="controls">
-      <button id="start">Spiel starten</button>
-    </section>
+    <main class="game-main">
+      <section class="topic-section">
+        <div id="topic-label" class="topic-label">Bereit zum Spielen?</div>
+      </section>
 
-    <section class="game">
-      <div id="word" class="word">_ _ _</div>
-      <input id="input" type="text" maxlength="1">
-      <div id="feedback" class="feedback"></div>
-      <div id="attempts" class="attempts">Versuche übrig: 8</div>
-    </section>
-  </main>
+      <section class="word-section">
+        <div class="word-container">
+          <div id="word" class="word">_ _ _</div>
+        </div>
+        <div class="input-container">
+          <input id="input" type="text" maxlength="1" placeholder="?" autocomplete="off">
+        </div>
+      </section>
 
-  <script type="module" src="/static/app.js"></script>
+      <section class="feedback-section">
+        <div id="feedback" class="feedback"></div>
+        <div id="attempts" class="attempts">
+          <span class="attempts-icon">💚</span>
+          <span class="attempts-text">Versuche übrig: 8</span>
+        </div>
+      </section>
+
+      <section class="controls-section">
+        <button id="start" class="btn btn-primary">
+          <span class="btn-icon">🎮</span>
+          <span class="btn-text">Spiel starten</span>
+        </button>
+      </section>
+    </main>
+
+    <footer class="game-footer">
+      <div class="game-stats">
+        <div class="stat-item">
+          <span class="stat-label">Runden</span>
+          <span id="round-count" class="stat-value">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Punkte</span>
+          <span id="score-count" class="stat-value">0</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Show page once CSS is loaded
+    if (document.readyState === 'complete') {
+      document.documentElement.classList.add('loaded');
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.add('loaded');
+      });
+    }
+  </script>
+  <script type="module" src="/static/app.js" defer></script>
 </body>
 </html>
 

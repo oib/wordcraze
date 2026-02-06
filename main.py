@@ -5,6 +5,7 @@ import requests, random, logging, json
 from logging.handlers import RotatingFileHandler
 from fastapi.responses import HTMLResponse
 from pathlib import Path
+import os
 
 log_path = "/var/log/games/WordCraze.log"
 logger = logging.getLogger("WordCraze")
@@ -16,6 +17,11 @@ logger.addHandler(handler)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static", html=True), name="static")
+
+# OpenWebUI Configuration
+OPENWEBUI_API_URL = os.getenv("OPENWEBUI_API_URL", "http://10.1.223.1:8080")
+OPENWEBUI_API_KEY = os.getenv("OPENWEBUI_API_KEY", "sk-eaa1c1c6cfe744179999f62a2fe5d3cf")
+OPENWEBUI_MODEL = os.getenv("OPENWEBUI_MODEL", "gemma3:1b")
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
@@ -33,10 +39,10 @@ state = None
 
 def getWordsFromOllama():
     try:
-        url = "https://at1.dynproxy.net/api/chat/completions"
-        headers = {"Authorization": "Bearer sk-d0e3a491b19c435a975b234969298cd0"}
+        url = f"{OPENWEBUI_API_URL}/api/chat/completions"
+        headers = {"Authorization": f"Bearer {OPENWEBUI_API_KEY}"}
         body = {
-            "model": "gemma3:1b",
+            "model": OPENWEBUI_MODEL,
             "messages": [
                 {
                     "role": "system",
@@ -57,7 +63,7 @@ def getWordsFromOllama():
             clean = clean.removeprefix("```json").strip()
         if clean.endswith("```"):
             clean = clean.removesuffix("```").strip()
-        logger.info(f"Ollama-Rohantwort:\n{clean}")
+        logger.info(f"Received words from Ollama")
         return json.loads(clean)
     except Exception as e:
         logger.warning(f"Fallback Ollama getWordsFromOllama(): {e}")
@@ -74,10 +80,10 @@ def start_game():
 
     try:
         desc_req = requests.post(
-            "https://at1.dynproxy.net/api/chat/completions",
-            headers={"Authorization": "Bearer sk-d0e3a491b19c435a975b234969298cd0"},
+            f"{OPENWEBUI_API_URL}/api/chat/completions",
+            headers={"Authorization": f"Bearer {OPENWEBUI_API_KEY}"},
             json={
-                "model": "gemma3:1b",
+                "model": OPENWEBUI_MODEL,
                 "messages": [
                     {"role": "user", "content": f"Nenne ein Oberthema (wie ‚Möbel‘, ‚Tiere‘, ‚Sport‘), zu dem das Wort ‚{word}‘ gehört. Antworte nur mit einem allgemeinen Wort. Nenne niemals das Wort selbst."}
                 ],
@@ -88,10 +94,10 @@ def start_game():
         desc_req.raise_for_status()
         desc = desc_req.json().get("choices", [{}])[0].get("message", {}).get("content", "(unbekannt)").strip()
     except Exception as e:
-        logger.warning(f"Beschreibung für '{word}' fehlgeschlagen: {e}")
+        logger.warning(f"Failed to get description for word: {e}")
         desc = "(unbekannt)"
 
-    logger.info(f"Zufallsstart mit Wort: {word}")
+    logger.info(f"Game started with word length: {len(word)}")
     return {"word": state.guessed, "attempts": state.attempts, "source": "ollama", "topic": desc}
 
 @app.post("/api/guess/{letter}")
@@ -129,8 +135,8 @@ def guess_letter(letter: str):
 async def moderate(request: Request):
     data = await request.json()
     text = data.get("text", "")
-    bad = any(w in text.lower() for w in ["shit", "fuck", "spam"])
-    logger.info(f"Moderation checked: '{text}' → {'REJECTED' if bad else 'OK'}")
+    bad = any(w in text.lower() for w in ["shit", "fuck", "spam", "idiot", "dumm"])
+    logger.info(f"Moderation check: {'REJECTED' if bad else 'APPROVED'}")
     return {"is_ok": not bad}
 
 @app.get("/api/ping")
