@@ -26,3 +26,6 @@ Thumbs.db
 # IDEs und Editoren
 .vscode/
 .idea/
+
+# Windsurf/Cascade Snapshots
+.snapshots/
