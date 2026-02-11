@@ -85,12 +85,14 @@ sudo systemctl enable wordcraze.service
 
 ## Konfiguration
 
-Die Ollama API Konfiguration befindet sich in `main.py`:
+Die OpenWebUI API Konfiguration wird über Umgebungsvariablen gesetzt:
 
-```python
-url = "https://at1.dynproxy.net/api/chat/completions"
-headers = {"Authorization": "Bearer YOUR_API_KEY"}
+```bash
+OPENWEBUI_API_URL=http://your-openwebui-server:8080
+OPENWEBUI_API_KEY=your_api_key
 ```
+
+Siehe `.env.example` für eine Vorlage.
 
 ## Spielverlauf
 
